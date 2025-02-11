@@ -3,7 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const { dbConnect } = require('./utiles/db')
+const { dbconnect } = require('./utiles/db')
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -17,7 +17,8 @@ const allowedOrigins = [process.env.ALLOWED_ORIGINS_1,process.env.ALLOWED_ORIGIN
 
 app.use(cors({
     origin : allowedOrigins,
-methods: ["GET", "POST","DELETE","PUT"],   
+methods: ["GET", "POST","DELETE","PUT"], 
+allowedHeaders: ["Content-Type","Authorization"] , 
     credentials: true
 }))
 
@@ -166,6 +167,6 @@ app.use('/api',require('./routes/dashboard/dashboardRoutes'))
 app.get('/',(req,res) => res.send('Hello Server'))
 
 const port = process.env.PORT
-dbConnect()
+dbconnect()
 server.listen(port, () => console.log(`Server is running on port`))
 // server.listen(port, () => console.log(`Server is running on port ${port}`))
