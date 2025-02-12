@@ -17,14 +17,17 @@ class authControllers{
         if(admin) {
             const match = await bcrpty.compare(password,admin.password)
                     if (match){
-                        const token = await createToken({
+                        const adminToken = await createToken({
                             id : admin.id,
                             role : admin.role
                         })
-                        res.cookie('accessToken',token, {
-                            expires : new Date(Date.now() + 7*24*60*60*1000)
+                        res.cookie('adminToken',adminToken, {
+                            expires : new Date(Date.now() + 7*24*60*60*1000),
+                            httpOnly: true,
+                            secure: true,  // Use true in production (HTTPS)
+                            sameSite: "Strict",
                         })
-                        responseReturn(res,200,{token, message : "Login Success"})
+                        responseReturn(res,200,{adminToken, message : "Login Success"})
                     } else {
                             responseReturn(res, 404, { error : "Password Wrong"})
                     }
@@ -45,14 +48,17 @@ class authControllers{
          if(seller) {
              const match = await bcrpty.compare(password,seller.password)
                      if (match){
-                         const token = await createToken({
+                         const sellerToken = await createToken({
                              id : seller.id,
                              role : seller.role
                          })
-                         res.cookie('accessToken',token, {
-                             expires : new Date(Date.now() + 7*24*60*60*1000)
+                         res.cookie('sellerToken',sellerToken, {
+                             expires : new Date(Date.now() + 7*24*60*60*1000),
+                             httpOnly: true,
+                             secure: true,  // Use true in production (HTTPS)
+                             sameSite: "Strict",
                          })
-                         responseReturn(res,200,{token, message : "Login Success"})
+                         responseReturn(res,200,{sellerToken, message : "Login Success"})
                      } else {
                              responseReturn(res, 404, { error : "Password Wrong"})
                      }
@@ -82,16 +88,19 @@ class authControllers{
                                         myId : seller.id
                                     })
 
-                                    const token  =  await createToken({
+                                    const sellerToken  =  await createToken({
                                         id : seller.id,
                                         role : seller.role
                                     })
 
-                                    res.cookie('accessToken', token ,
-                                         { expires : new Date(Date.now() + 7*24*60*60*1000)
+                                    res.cookie('sellerToken', sellerToken ,
+                                         { expires : new Date(Date.now() + 7*24*60*60*1000),
+                                            httpOnly: true,
+                                            secure: true,  // Use true in production (HTTPS)
+                                            sameSite: "Strict",
 
                                     })
-                                    responseReturn(res, 201, {token, message : 'Registered successfully'})
+                                    responseReturn(res, 201, {sellerToken, message : 'Registered successfully'})
                 }
             } catch (error) {
                 responseReturn(res, 500, { error : 'Internal server error'})
@@ -168,17 +177,30 @@ class authControllers{
         }
     }
 
-    logout = async(req, res) => {
+
+
+    logout = async (req, res) => {
         try {
-            res.cookie('accessToken',null, {
-                expires : new Date(Date.now()),
-                httpOnly : true
-            })
-            responseReturn(res, 200, {message : 'Logout Success'})
+            // Clear both adminToken and sellerToken
+            res.cookie("adminToken", null, {
+                expires: new Date(Date.now()),
+                httpOnly: true,
+                secure: true,  // Use true in production (HTTPS)
+                sameSite: "Strict",
+            });
+    
+            res.cookie("sellerToken", null, {
+                expires: new Date(Date.now()),
+                httpOnly: true,
+                secure: true,  // Use true in production (HTTPS)
+                sameSite: "Strict",
+            });
+    
+            responseReturn(res, 200, { message: "Logout Success" });
         } catch (error) {
-            responseReturn(res, 500, {error : error.message})
+            responseReturn(res, 500, { error: error.message });
         }
-    }
+    };
 
 
 
