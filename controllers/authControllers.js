@@ -12,22 +12,20 @@ class authControllers{
     admin_login = async (req,res) =>{
        const {email,password} = req.body
        try {
+        console.log(email," ", password)
         const admin = await adminModel.findOne({email})
         
         if(admin) {
             const match = await bcrpty.compare(password,admin.password)
                     if (match){
-                        const adminToken = await createToken({
+                        const token = await createToken({
                             id : admin.id,
                             role : admin.role
                         })
-                        res.cookie('adminToken',adminToken, {
-                            expires : new Date(Date.now() + 7*24*60*60*1000),
-                            httpOnly: true,
-                            secure: true,  // Use true in production (HTTPS)
-                            sameSite: "Strict",
+                        res.cookie('accessToken',token, {
+                            expires : new Date(Date.now() + 7*24*60*60*1000)
                         })
-                        responseReturn(res,200,{adminToken, message : "Login Success"})
+                        responseReturn(res,200,{token, message : "Login Success"})
                     } else {
                             responseReturn(res, 404, { error : "Password Wrong"})
                     }
@@ -43,22 +41,20 @@ class authControllers{
     seller_login = async (req,res) =>{
         const {email,password} = req.body
         try {
+         console.log(email," ", password)
          const seller = await sellerModel.findOne({email}).select('+password')
          
          if(seller) {
              const match = await bcrpty.compare(password,seller.password)
                      if (match){
-                         const sellerToken = await createToken({
+                         const token = await createToken({
                              id : seller.id,
                              role : seller.role
                          })
-                         res.cookie('sellerToken',sellerToken, {
-                             expires : new Date(Date.now() + 7*24*60*60*1000),
-                             httpOnly: true,
-                             secure: true,  // Use true in production (HTTPS)
-                             sameSite: "Strict",
+                         res.cookie('accessToken',token, {
+                             expires : new Date(Date.now() + 7*24*60*60*1000)
                          })
-                         responseReturn(res,200,{sellerToken, message : "Login Success"})
+                         responseReturn(res,200,{token, message : "Login Success"})
                      } else {
                              responseReturn(res, 404, { error : "Password Wrong"})
                      }
@@ -88,19 +84,16 @@ class authControllers{
                                         myId : seller.id
                                     })
 
-                                    const sellerToken  =  await createToken({
+                                    const token  =  await createToken({
                                         id : seller.id,
                                         role : seller.role
                                     })
 
-                                    res.cookie('sellerToken', sellerToken ,
-                                         { expires : new Date(Date.now() + 7*24*60*60*1000),
-                                            httpOnly: true,
-                                            secure: true,  // Use true in production (HTTPS)
-                                            sameSite: "Strict",
+                                    res.cookie('accessToken', token ,
+                                         { expires : new Date(Date.now() + 7*24*60*60*1000)
 
                                     })
-                                    responseReturn(res, 201, {sellerToken, message : 'Registered successfully'})
+                                    responseReturn(res, 201, {token, message : 'Registered successfully'})
                 }
             } catch (error) {
                 responseReturn(res, 500, { error : 'Internal server error'})
@@ -170,6 +163,7 @@ class authControllers{
             })
 
             const userInfo = await sellerModel.findById(id)
+            console.log(userInfo)
             responseReturn(res, 201,  {message : 'Profile Info Added Successfully',userInfo})
             
         } catch (error) {
@@ -177,30 +171,17 @@ class authControllers{
         }
     }
 
-
-
-    logout = async (req, res) => {
+    logout = async(req, res) => {
         try {
-            // Clear both adminToken and sellerToken
-            res.cookie("adminToken", null, {
-                expires: new Date(Date.now()),
-                httpOnly: true,
-                secure: true,  // Use true in production (HTTPS)
-                sameSite: "Strict",
-            });
-    
-            res.cookie("sellerToken", null, {
-                expires: new Date(Date.now()),
-                httpOnly: true,
-                secure: true,  // Use true in production (HTTPS)
-                sameSite: "Strict",
-            });
-    
-            responseReturn(res, 200, { message: "Logout Success" });
+            res.cookie('accessToken',null, {
+                expires : new Date(Date.now()),
+                httpOnly : true
+            })
+            responseReturn(res, 200, {message : 'Logout Success'})
         } catch (error) {
-            responseReturn(res, 500, { error: error.message });
+            responseReturn(res, 500, {error : error.message})
         }
-    };
+    }
 
 
 
