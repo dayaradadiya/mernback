@@ -211,7 +211,6 @@ class cardController {
         } 
       }
 
-            // console.log(p)
             responseReturn(res,200,{ 
                 card_products: p,
                 price: calculatePrice,

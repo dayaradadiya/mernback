@@ -12,7 +12,6 @@ class authControllers{
     admin_login = async (req,res) =>{
        const {email,password} = req.body
        try {
-        console.log(email," ", password)
         const admin = await adminModel.findOne({email})
         
         if(admin) {
@@ -41,7 +40,6 @@ class authControllers{
     seller_login = async (req,res) =>{
         const {email,password} = req.body
         try {
-         console.log(email," ", password)
          const seller = await sellerModel.findOne({email}).select('+password')
          
          if(seller) {
@@ -163,7 +161,6 @@ class authControllers{
             })
 
             const userInfo = await sellerModel.findById(id)
-            console.log(userInfo)
             responseReturn(res, 201,  {message : 'Profile Info Added Successfully',userInfo})
             
         } catch (error) {

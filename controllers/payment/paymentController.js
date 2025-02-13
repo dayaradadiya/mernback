@@ -9,7 +9,6 @@ const { responseReturn } = require('../../utiles/response')
 const {mongo : {ObjectId}} = require('mongoose')
 
 const stripe = require('stripe')(process.env.react_app_s_key)
-// ('sk_test_51QV1DXB2ORGSrg0on1s6yEUBEC6vKRFQKZREL1POeh9ucqEXnO6ulyWXHTifLREMK5tWkFTRomBPfnLMHOrEIA8d0090Je8YZy')
 
 class paymentController {
 

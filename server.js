@@ -13,7 +13,7 @@ const http = require('http')
 const { userInfo } = require('os')
 const server = http.createServer(app)
 
-const allowedOrigins = [process.env.ALLOWED_ORIGINS_1,process.env.ALLOWED_ORIGINS_2];
+const allowedOrigins = [process.env.ALLOWED_ORIGINS_1,process.env.ALLOWED_ORIGINS_2, process.env.ALLOWED_ORIGINS_3];
 
 app.use(cors({
     origin : allowedOrigins,
@@ -95,7 +95,6 @@ const remove = (socketId) => {
 }
 
 io.on('connection',(soc)=> {
-    // console.log('socket server running')
     soc.on('add_user',(customerId, userInfo) =>{    
         addUser(customerId,soc.id, userInfo)
         io.emit('activeSeller', allSeller)
@@ -169,4 +168,3 @@ app.get('/',(req,res) => res.send('Hello Server'))
 const port = process.env.PORT
 dbconnect()
 server.listen(port, () => console.log(`Server is running on port`))
-// server.listen(port, () => console.log(`Server is running on port ${port}`))
