@@ -6,5 +6,8 @@ const categoryController = require('../../controllers/dashboard/categoryControll
 router.post('/category-add',authMiddleware, categoryController.add_category)
 router.get('/category-get',authMiddleware, categoryController.get_category)
 
+router.put('/category-update/:id',authMiddleware, categoryController.update_category)
+router.delete('/category/:id', categoryController.deleteCategory)
+
 module.exports = router
 
