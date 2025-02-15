@@ -5,7 +5,6 @@ const wishlistModel = require('../../models/wishlistModel')
 
 
 class cardController {
-
      add_to_card = async(req,res) => {
         const { userId, productId, quantity} = req.body
         try {
@@ -23,7 +22,7 @@ class cardController {
             ]
             })
             if (product) {
-                responseReturn(res,404,{error : "Product Already Added To Card"})
+                responseReturn(res,500,{error : "Product Already Added To Card"})
             } else {
                 const product = await cardModel.create({
                     userId,
@@ -82,7 +81,7 @@ class cardController {
         try {
             const product = await wishlistModel.findOne({slug})
             if (product) {
-                responseReturn(res, 404, {
+                responseReturn(res, 500, {
                     error : 'Product Is Already In Wishlist'
                 })
             } else {
