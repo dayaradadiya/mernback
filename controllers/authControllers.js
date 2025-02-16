@@ -180,7 +180,23 @@ class authControllers{
         }
     }
 
+    change_password = async(req, res) => {
+        const {email, old_password, new_password} = req.body
+        try {
+            const user = await sellerModel.findOne({email}).select('+password');
+            if (!user) return res.status(404).json({message : 'User not found.'});
 
+            const match = await bcrpty.compare(old_password, user.password)
+            if (!match) return res.status(400).json({message : 'Incorrect old password'});
+             
+            user.password = await bcrpty.hash(new_password,10);
+            await user.save();
+            res.json({message : 'Password changed successfully'});
+
+        } catch (error) {
+            responseReturn(res, 500, {error : error.message})
+        }
+    }
 
 }
 
